@@ -1,0 +1,9 @@
+# zyLabs environment
+.envrc
+.direnv/
+.vscode/
+
+
+# Dart/Flutter folders
+build/
+.dart_tool/
