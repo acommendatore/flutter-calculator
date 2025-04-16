@@ -65,8 +65,34 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  // Function to square the current result or expression
+  void _squareValue() {
+    try {
+      final expression = Expression.parse(_expression);
+      final evaluator = ExpressionEvaluator();
+      final result = evaluator.eval(expression, {});
+      final squared = (result as num) * (result as num);
+      setState(() {
+        _result = squared.toString();
+        _expression = squared.toString();
+      });
+    } catch (e) {
+      setState(() {
+        _result = 'Error';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final List<String> buttons = [
+      '7', '8', '9', '/',
+      '4', '5', '6', '*',
+      '1', '2', '3', '-',
+      'C', '0', '=', '+',
+      'x²', '%'
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -92,13 +118,13 @@ class _MyHomePageState extends State<MyHomePage> {
             // Calculator Button Grid
             GridView.builder(
               shrinkWrap: true,
+              itemCount: buttons.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 childAspectRatio: 1.5,
               ),
-              itemCount: 16,
               itemBuilder: (context, index) {
-                return _buildButton(index);
+                return _buildButton(buttons[index]);
               },
             ),
           ],
@@ -108,22 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // Build a single button for the calculator
-  Widget _buildButton(int index) {
-    final List<String> buttons = [
-      '7', '8', '9', '/',
-      '4', '5', '6', '*',
-      '1', '2', '3', '-',
-      'C', '0', '=', '+',
-    ];
-
-    String buttonText = buttons[index];
-
+  Widget _buildButton(String buttonText) {
     return GestureDetector(
       onTap: () {
         if (buttonText == 'C') {
           _clear();
         } else if (buttonText == '=') {
           _evaluateExpression();
+        } else if (buttonText == 'x²') {
+          _squareValue();
         } else {
           _updateExpression(buttonText);
         }
